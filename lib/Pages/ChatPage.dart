@@ -12,13 +12,17 @@ class ChatPage extends StatefulWidget {
 class ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    return Scaffold(
       floatingActionButton: const FloatingActionButton(
         onPressed: null,
         child: Icon(Icons.chat),
       ),
       body: ListView(
-        children: const [CustomCard(),],
+        children: const [
+          CustomCard(),
+          CustomCard(),
+          CustomCard()
+        ],
       ),
     );
   }
