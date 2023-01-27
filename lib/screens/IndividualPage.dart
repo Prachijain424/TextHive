@@ -1,6 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled1/Models/ChatModel.dart';
+
+import '../Widgets/IconCreation.dart';
 
 class IndividualPage extends StatefulWidget {
   const IndividualPage({Key? key, required this.chatModel}) : super(key: key);
@@ -89,7 +90,7 @@ class IndividualPageState extends State<IndividualPage> {
               })
         ],
       ),
-      body: Container(
+      body: SizedBox(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         child: Stack(
@@ -102,7 +103,8 @@ class IndividualPageState extends State<IndividualPage> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width - 55,
                     child: Card(
-                      margin: const EdgeInsets.only(left: 10, right: 10, bottom: 5),
+                      margin:
+                          const EdgeInsets.only(left: 10, right: 10, bottom: 5),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(25),
                       ),
@@ -114,15 +116,25 @@ class IndividualPageState extends State<IndividualPage> {
                         decoration: InputDecoration(
                             contentPadding: const EdgeInsets.all(10),
                             prefixIcon: IconButton(
-                                icon: const Icon(Icons.emoji_emotions),
-                                onPressed: () {},
+                              icon: const Icon(Icons.emoji_emotions),
+                              onPressed: () {},
                             ),
                             suffixIcon: Row(
                               // mainAxisAlignment: MainAxisAlignment.end,
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                IconButton(onPressed: (){}, icon: const Icon(Icons.attach_file_rounded),),
-                                IconButton(onPressed: (){}, icon: const Icon(Icons.camera_alt_rounded))
+                                IconButton(
+                                  onPressed: () {
+                                    showModalBottomSheet(
+                                        backgroundColor: Colors.blue,
+                                        context: context,
+                                        builder: (builder) => bottomSheet());
+                                  },
+                                  icon: const Icon(Icons.attach_file_rounded),
+                                ),
+                                IconButton(
+                                    onPressed: () {},
+                                    icon: const Icon(Icons.camera_alt_rounded))
                               ],
                             ),
                             border: InputBorder.none,
@@ -135,11 +147,73 @@ class IndividualPageState extends State<IndividualPage> {
                     child: CircleAvatar(
                       radius: 22,
                       backgroundColor: Colors.blue,
-                      child: Icon(Icons.mic, color: Colors.white,),
+                      child: Icon(
+                        Icons.mic,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ],
               ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget bottomSheet() {
+    return SizedBox(
+      height: 238,
+      width: MediaQuery.of(context).size.width,
+      child: Card(
+        margin: const EdgeInsets.all(18),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(
+                  width: 35,
+                ),
+                iconCreation(
+                    Icons.insert_drive_file, Colors.indigo, "Document"),
+                const SizedBox(
+                  width: 35,
+                ),
+                iconCreation(Icons.camera_alt_rounded, Colors.pink, "Camera"),
+                const SizedBox(
+                  width: 35,
+                ),
+                iconCreation(Icons.photo_sharp, Colors.purple, "Gallery"),
+                const SizedBox(
+                  width: 35,
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(
+                  width: 35,
+                ),
+                iconCreation(Icons.multitrack_audio_outlined, Colors.deepOrangeAccent, "Audio"),
+                const SizedBox(
+                  width: 35,
+                ),
+                iconCreation(Icons.map, Colors.green, "Location"),
+                const SizedBox(
+                  width: 35,
+                ),
+                iconCreation(Icons.contact_page, Colors.lightBlue, "Contact"),
+                const SizedBox(
+                  width: 35,
+                ),
+              ],
             )
           ],
         ),
