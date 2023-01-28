@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:untitled1/CustomUI/AvatarCard.dart';
 import 'package:untitled1/CustomUI/ContactCard.dart';
 import 'package:untitled1/Models/ChatModel.dart';
 
@@ -55,22 +56,49 @@ class CreateGroupState extends State<CreateGroup> {
           IconButton(onPressed: (){}, icon: const Icon(Icons.search)),
         ],
       ),
-      body: ListView.builder(
-        itemCount: contacts.length,
-        itemBuilder: (context, index) {
-          return InkWell(
-            onTap: (){
-              setState(() {
-                contacts[index].selected ^= true;
-                if(contacts[index].selected)
-                  {
-                    groups.add(contacts[index]);
-                  }
-              });
-            },
-            child: ContactCard(contact: contacts[index],)
-          );
-        }),
+      body: Stack(
+        children: [ListView.builder(
+          itemCount: contacts.length,
+          itemBuilder: (context, index) {
+            return InkWell(
+              onTap: (){
+                setState(() {
+                  contacts[index].selected ^= true;
+                  if(contacts[index].selected)
+                    {
+                      groups.add(contacts[index]);
+                    }
+                });
+              },
+              child: ContactCard(contact: contacts[index],)
+            );
+          }),
+        groups.length>0 ? Column(
+          children: [Container(
+            height: 75,
+            color: Colors.white,
+            child : ListView.builder(
+              scrollDirection: Axis.horizontal,
+            itemCount: contacts.length,
+            itemBuilder: (context, index)=>InkWell(
+              onTap: () {
+                setState(() {
+                  groups.remove(contacts[index]);
+                  contacts[index].selected = false;
+                });
+              },
+                child: AvatarCard(contact:contacts[index])),
+            )
+          ),
+            const Divider(
+              thickness : 1,
+
+            ),
+          ],
+        )
+            : Container(),
+        ]
+      ),
       backgroundColor: const Color(0xFFE1F5FE),
       );
   }
