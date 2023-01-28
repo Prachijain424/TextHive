@@ -11,10 +11,25 @@ class SelectContact extends StatefulWidget {
 }
 
 class SelectContactState extends State<SelectContact> {
-
   List<ChatModel> options = [
-    ChatModel(name: "Create Contact", icon: const Icon(Icons.person_add), currentMessage: "", isGroup: false, time: ""),
-    ChatModel(name: "Create Group", icon: const Icon(Icons.group_add), currentMessage: "", isGroup: false, time: ""),
+    ChatModel(
+        name: "Create Contact",
+        icon: const Icon(
+          Icons.person_add,
+          color: Colors.white,
+        ),
+        currentMessage: "",
+        isGroup: false,
+        time: ""),
+    ChatModel(
+        name: "Create Group",
+        icon: const Icon(
+          Icons.group_add,
+          color: Colors.white,
+        ),
+        currentMessage: "",
+        isGroup: false,
+        time: ""),
   ];
 
   @override
@@ -45,17 +60,12 @@ class SelectContactState extends State<SelectContact> {
       ),
       body: ListView(
         children: [
-          InkWell(
-            onTap: (){
-            },
-              child: ContactCard(contact: options[0])
-          ),
+          InkWell(onTap: () {}, child: ContactCard(contact: options[0])),
           InkWell(
               onTap: (){
                 Navigator.push(context, MaterialPageRoute(builder: (builder)=>const CreateGroup()));
               },
-              child: ContactCard(contact: options[1])
-          ),
+              child: ContactCard(contact: options[1])),
         ],
       ),
       backgroundColor: const Color(0xFFE1F5FE),

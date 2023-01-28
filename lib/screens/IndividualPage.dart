@@ -33,7 +33,7 @@ class IndividualPageState extends State<IndividualPage> {
               CircleAvatar(
                 radius: 20,
                 backgroundColor: Colors.blueGrey,
-                child: Icon(Icons.account_circle),
+                child: Icon(Icons.account_circle, color: Colors.white,),
               )
             ],
           ),
@@ -43,7 +43,7 @@ class IndividualPageState extends State<IndividualPage> {
           child: Container(
             margin: const EdgeInsets.all(10),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(

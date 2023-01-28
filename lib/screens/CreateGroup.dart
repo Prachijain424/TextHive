@@ -58,22 +58,28 @@ class CreateGroupState extends State<CreateGroup> {
       ),
       body: Stack(
         children: [ListView.builder(
-          itemCount: contacts.length,
+          itemCount: contacts.length + 1,
           itemBuilder: (context, index) {
+            if(index == 0)
+              {
+                return Container(
+                  height: groups.isNotEmpty ? 90: 10,
+                );
+              }
             return InkWell(
               onTap: (){
                 setState(() {
-                  contacts[index].selected ^= true;
-                  if(contacts[index].selected)
+                  contacts[index - 1].selected ^= true;
+                  if(contacts[index - 1].selected)
                     {
-                      groups.add(contacts[index]);
+                      groups.add(contacts[index - 1]);
                     }
                 });
               },
-              child: ContactCard(contact: contacts[index],)
+              child: ContactCard(contact: contacts[index - 1],)
             );
           }),
-        groups.length>0 ? Column(
+        groups.isNotEmpty ? Column(
           children: [Container(
             height: 75,
             color: Colors.white,
@@ -92,11 +98,9 @@ class CreateGroupState extends State<CreateGroup> {
           ),
             const Divider(
               thickness : 1,
-
             ),
           ],
-        )
-            : Container(),
+        ): Container(),
         ]
       ),
       backgroundColor: const Color(0xFFE1F5FE),
