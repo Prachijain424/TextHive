@@ -14,13 +14,13 @@ class ChatPageState extends State<ChatPage> {
   List<ChatModel> chats = [
     ChatModel(
         name: "Lalit",
-        icon: "person.svg",
+        icon: const Icon(Icons.person, color: Colors.white,),
         currentMessage: "Hi",
         isGroup: false,
         time: "18:07"),
     ChatModel(
         name: "Lalit",
-        icon: "person.svg",
+        icon: const Icon(Icons.person, color: Colors.white,),
         currentMessage: "Hi",
         isGroup: false,
         time: "18:07"),

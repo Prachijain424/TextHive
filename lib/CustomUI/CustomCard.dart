@@ -4,7 +4,6 @@ import 'package:untitled1/screens/IndividualPage.dart';
 
 class CustomCard extends StatelessWidget {
   final ChatModel chatModel;
-
   const CustomCard({Key? key, required this.chatModel}) : super(key: key);
 
   @override
