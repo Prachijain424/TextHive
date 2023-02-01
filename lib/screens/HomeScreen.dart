@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:untitled1/Pages/CameraPage.dart';
+import 'package:untitled1/screens/CreateGroup.dart';
 import '../Pages/ChatPage.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -30,7 +31,12 @@ class HomeScreenState extends State<HomeScreen>
             onPressed: () {},
           ),
           PopupMenuButton<String>(onSelected: (value) {
-            print(value);
+            if (value == "New Group") {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (builder) => const CreateGroup()));
+            } else {
+              print(value);
+            }
           }, itemBuilder: (BuildContext context) {
             return [
               const PopupMenuItem(
