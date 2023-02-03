@@ -1,7 +1,7 @@
-import 'package:camera/camera.dart';
+// import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
-List<CameraDescription> cameras = [];
+// List<CameraDescription> cameras = [];
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({Key? key}) : super(key: key);
@@ -11,16 +11,16 @@ class CameraScreen extends StatefulWidget {
 }
 
 class CameraScreenState extends State<CameraScreen> {
-  late CameraController _cameraController;
+  // late CameraController _cameraController;
 
-  late Future<void> cameraValue;
+  // late Future<void> cameraValue;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _cameraController = CameraController(cameras[0], ResolutionPreset.high);
-    cameraValue = _cameraController.initialize();
+    // _cameraController = CameraController(cameras[0], ResolutionPreset.high);
+    // cameraValue = _cameraController.initialize();
   }
 
   @override

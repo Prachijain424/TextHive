@@ -1,10 +1,10 @@
-import 'package:camera/camera.dart';
+// import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled1/screens/CameraScreen.dart';
 import 'package:untitled1/screens/HomeScreen.dart';
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+void main() {
+  // WidgetsFlutterBinding.ensureInitialized();
   // cameras = await availableCameras();
   runApp(const MyApp());
 }

@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:untitled1/CustomUI/OwnMessageCard.dart';
 import 'package:untitled1/CustomUI/ReplyCard.dart';
 import 'package:untitled1/Models/ChatModel.dart';
-
 import '../Widgets/IconCreation.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class IndividualPage extends StatefulWidget {
   const IndividualPage({Key? key, required this.chatModel}) : super(key: key);
@@ -15,6 +15,26 @@ class IndividualPage extends StatefulWidget {
 }
 
 class IndividualPageState extends State<IndividualPage> {
+  late IO.Socket socket;
+
+  void connect() {
+    socket = IO.io('http://localhost:5000', <String, dynamic>{
+      'transports': ['websocket'],
+      'upgrade': false
+    });
+    socket.connect();
+    socket.onConnect((data) => print("Connected"));
+    socket.emit("/test", "Hello lalit");
+    print(socket.connected);
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    connect();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
