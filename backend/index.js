@@ -12,7 +12,7 @@ app.use(express.json());
 io.on("connection", (socket)=>{
     console.log("connected");
     console.log(socket.id, "has joined");
-    socket.on("/test", (msg)=>{
+    socket.on("signin", (msg)=>{
         console.log(msg);
     });
 });

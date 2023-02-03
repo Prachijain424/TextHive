@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:untitled1/Models/ChatModel.dart';
 import 'package:untitled1/Pages/CameraPage.dart';
 import 'package:untitled1/screens/CreateGroup.dart';
 import '../Pages/ChatPage.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({Key? key, required this.users, required this.currentUser})
+      : super(key: key);
+  final List<ChatModel> users;
+  final ChatModel currentUser;
 
   @override
   HomeScreenState createState() => HomeScreenState();
@@ -34,6 +38,8 @@ class HomeScreenState extends State<HomeScreen>
             if (value == "New Group") {
               Navigator.push(context,
                   MaterialPageRoute(builder: (builder) => const CreateGroup()));
+            } else if (value == "Logout") {
+              Navigator.pop(context);
             } else {
               print(value);
             }
@@ -59,6 +65,10 @@ class HomeScreenState extends State<HomeScreen>
                 value: "Settings",
                 child: Text("Settings"),
               ),
+              const PopupMenuItem(
+                value: "Logout",
+                child: Text("Logout"),
+              ),
             ];
           })
         ],
@@ -78,11 +88,14 @@ class HomeScreenState extends State<HomeScreen>
           ],
         ),
       ),
-      body: TabBarView(controller: _controller, children: const [
-        Text("Camera"),
-        ChatPage(),
-        Text("3"),
-        Text("4"),
+      body: TabBarView(controller: _controller, children: [
+        const Text("Camera"),
+        ChatPage(
+          users: widget.users,
+          currentUser: widget.currentUser,
+        ),
+        const Text("3"),
+        const Text("4"),
       ]),
     );
   }

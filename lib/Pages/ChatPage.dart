@@ -4,28 +4,16 @@ import 'package:untitled1/screens/SelectContact.dart';
 import '../CustomUI/CustomCard.dart';
 
 class ChatPage extends StatefulWidget {
-  const ChatPage({Key? key}) : super(key: key);
+  const ChatPage({Key? key, required this.users, required this.currentUser})
+      : super(key: key);
+  final List<ChatModel> users;
+  final ChatModel currentUser;
 
   @override
   ChatPageState createState() => ChatPageState();
 }
 
 class ChatPageState extends State<ChatPage> {
-  List<ChatModel> chats = [
-    ChatModel(
-        name: "Lalit",
-        icon: const Icon(Icons.person, color: Colors.white,),
-        currentMessage: "Hi",
-        isGroup: false,
-        time: "18:07"),
-    ChatModel(
-        name: "Lalit",
-        icon: const Icon(Icons.person, color: Colors.white,),
-        currentMessage: "Hi",
-        isGroup: false,
-        time: "18:07"),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,9 +25,10 @@ class ChatPageState extends State<ChatPage> {
         child: const Icon(Icons.chat),
       ),
       body: ListView.builder(
-        itemCount: chats.length,
+        itemCount: widget.users.length,
         itemBuilder: (context, index) => CustomCard(
-          chatModel: chats[index],
+          chatModel: widget.users[index],
+          currentUser: widget.currentUser,
         ),
       ),
     );

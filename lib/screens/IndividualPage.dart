@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled1/CustomUI/OwnMessageCard.dart';
 import 'package:untitled1/CustomUI/ReplyCard.dart';
@@ -7,8 +6,11 @@ import '../Widgets/IconCreation.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class IndividualPage extends StatefulWidget {
-  const IndividualPage({Key? key, required this.chatModel}) : super(key: key);
+  const IndividualPage(
+      {Key? key, required this.chatModel, required this.currentUser})
+      : super(key: key);
   final ChatModel chatModel;
+  final ChatModel currentUser;
 
   @override
   IndividualPageState createState() => IndividualPageState();
@@ -16,6 +18,8 @@ class IndividualPage extends StatefulWidget {
 
 class IndividualPageState extends State<IndividualPage> {
   late IO.Socket socket;
+  bool sendButton = false;
+  IconData sendIcon = Icons.mic;
 
   void connect() {
     socket = IO.io('http://localhost:5000', <String, dynamic>{
@@ -24,8 +28,7 @@ class IndividualPageState extends State<IndividualPage> {
     });
     socket.connect();
     socket.onConnect((data) => print("Connected"));
-    socket.emit("/test", "Hello lalit");
-    print(socket.connected);
+    socket.emit("signin", widget.currentUser.id);
   }
 
   @override
@@ -164,6 +167,19 @@ class IndividualPageState extends State<IndividualPage> {
                             keyboardType: TextInputType.multiline,
                             maxLines: 5,
                             minLines: 1,
+                            onChanged: (value) {
+                              if (value.isNotEmpty) {
+                                setState(() {
+                                  sendButton = true;
+                                  sendIcon = Icons.send_rounded;
+                                });
+                              } else {
+                                setState(() {
+                                  sendButton = false;
+                                  sendIcon = Icons.mic;
+                                });
+                              }
+                            },
                             decoration: InputDecoration(
                                 contentPadding: const EdgeInsets.all(10),
                                 prefixIcon: IconButton(
@@ -196,13 +212,13 @@ class IndividualPageState extends State<IndividualPage> {
                           ),
                         ),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.only(bottom: 5),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 5),
                         child: CircleAvatar(
                           radius: 22,
                           backgroundColor: Colors.blue,
                           child: Icon(
-                            Icons.mic,
+                            sendIcon,
                             color: Colors.white,
                           ),
                         ),

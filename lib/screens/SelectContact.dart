@@ -20,7 +20,8 @@ class SelectContactState extends State<SelectContact> {
         ),
         currentMessage: "",
         isGroup: false,
-        time: ""),
+        time: "",
+        id: 1),
     ChatModel(
         name: "Create Group",
         icon: const Icon(
@@ -29,7 +30,8 @@ class SelectContactState extends State<SelectContact> {
         ),
         currentMessage: "",
         isGroup: false,
-        time: ""),
+        time: "",
+        id: 2),
   ];
 
   @override
@@ -62,8 +64,11 @@ class SelectContactState extends State<SelectContact> {
         children: [
           InkWell(onTap: () {}, child: ContactCard(contact: options[0])),
           InkWell(
-              onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (builder)=>const CreateGroup()));
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (builder) => const CreateGroup()));
               },
               child: ContactCard(contact: options[1])),
         ],
