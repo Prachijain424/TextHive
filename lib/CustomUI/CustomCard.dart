@@ -2,17 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:untitled1/Models/ChatModel.dart';
 import 'package:untitled1/screens/IndividualPage.dart';
 
-import '../Models/MessageModel.dart';
-
 class CustomCard extends StatelessWidget {
   final ChatModel chatModel;
   final ChatModel currentUser;
-  final List<MessageModel> messages;
   const CustomCard(
-      {Key? key,
-      required this.chatModel,
-      required this.currentUser,
-      required this.messages})
+      {Key? key, required this.chatModel, required this.currentUser})
       : super(key: key);
 
   @override
@@ -25,7 +19,6 @@ class CustomCard extends StatelessWidget {
                 builder: (context) => IndividualPage(
                       chatModel: chatModel,
                       currentUser: currentUser,
-                      messages: messages,
                     )));
       },
       child: Column(children: [

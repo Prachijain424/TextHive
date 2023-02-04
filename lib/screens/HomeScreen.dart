@@ -2,19 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:untitled1/Models/ChatModel.dart';
 import 'package:untitled1/Pages/CameraPage.dart';
 import 'package:untitled1/screens/CreateGroup.dart';
-import '../Models/MessageModel.dart';
 import '../Pages/ChatPage.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen(
-      {Key? key,
-      required this.users,
-      required this.currentUser,
-      required this.messages})
+  const HomeScreen({Key? key, required this.users, required this.currentUser})
       : super(key: key);
   final List<ChatModel> users;
   final ChatModel currentUser;
-  final List<MessageModel> messages;
 
   @override
   HomeScreenState createState() => HomeScreenState();
@@ -99,7 +93,6 @@ class HomeScreenState extends State<HomeScreen>
         ChatPage(
           users: widget.users,
           currentUser: widget.currentUser,
-          messages: widget.messages,
         ),
         const Text("3"),
         const Text("4"),
