@@ -8,10 +8,14 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class IndividualPage extends StatefulWidget {
   const IndividualPage(
-      {Key? key, required this.chatModel, required this.currentUser})
+      {Key? key,
+      required this.chatModel,
+      required this.currentUser,
+      required this.messages})
       : super(key: key);
   final ChatModel chatModel;
   final ChatModel currentUser;
+  final List<MessageModel> messages;
 
   @override
   IndividualPageState createState() => IndividualPageState();
@@ -22,7 +26,6 @@ class IndividualPageState extends State<IndividualPage> {
   bool sendButton = false;
   IconData sendIcon = Icons.mic;
   final TextEditingController _controller = TextEditingController();
-  List<MessageModel> messages = [];
 
   void connect() {
     socket = IO.io('http://localhost:5000', <String, dynamic>{
@@ -34,14 +37,14 @@ class IndividualPageState extends State<IndividualPage> {
       print("Connected");
       socket.on("message", (msg) {
         print(msg);
-        setMessage(msg["message"], "receive");
+        setMessage(msg["message"], "receive", widget.chatModel.id);
       });
     });
     socket.emit("signin", widget.currentUser.id);
   }
 
   void sendMessage(String message, int senderId, int receiverId) {
-    setMessage(message, "source");
+    setMessage(message, "source", senderId);
     socket.emit("message", {
       "message": message,
       "senderId": senderId,
@@ -49,12 +52,12 @@ class IndividualPageState extends State<IndividualPage> {
     });
   }
 
-  void setMessage(String message, String type) {
-    MessageModel m = MessageModel(type: type, message: message);
+  void setMessage(String message, String type, int id) {
+    MessageModel m = MessageModel(type: type, message: message, id: id);
     if (mounted) {
       setState(() {
         setState(() {
-          messages.add(m);
+          widget.messages.add(m);
         });
       });
     }
@@ -165,15 +168,16 @@ class IndividualPageState extends State<IndividualPage> {
                 SizedBox(
                     height: MediaQuery.of(context).size.height - 110,
                     child: ListView.builder(
-                      itemCount: messages.length,
+                      itemCount: widget.messages.length,
                       itemBuilder: (context, index) {
-                        if (messages[index].type == "source") {
+                        if (widget.messages[index].id ==
+                            widget.currentUser.id) {
                           return OwnMessageCard(
-                            message: messages[index].message,
+                            message: widget.messages[index].message,
                           );
                         } else {
                           return ReplyCard(
-                            message: messages[index].message,
+                            message: widget.messages[index].message,
                           );
                         }
                       },

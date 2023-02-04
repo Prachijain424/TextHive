@@ -3,6 +3,7 @@ import 'package:untitled1/CustomUI/ContactCard.dart';
 import 'package:untitled1/screens/HomeScreen.dart';
 
 import '../Models/ChatModel.dart';
+import '../Models/MessageModel.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -13,6 +14,7 @@ class LoginScreen extends StatefulWidget {
 
 class LoginScreenState extends State<LoginScreen> {
   late ChatModel currentUser;
+  List<MessageModel> messages = [];
   List<ChatModel> users = [
     ChatModel(
       name: "Lalit",
@@ -77,6 +79,7 @@ class LoginScreenState extends State<LoginScreen> {
                           builder: (builder) => HomeScreen(
                                 users: temp,
                                 currentUser: currentUser,
+                                messages: messages,
                               )));
                 },
               )),
