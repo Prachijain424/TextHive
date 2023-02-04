@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:untitled1/CustomUI/OwnMessageCard.dart';
 import 'package:untitled1/CustomUI/ReplyCard.dart';
 import 'package:untitled1/Models/ChatModel.dart';
+import 'package:untitled1/Models/MessageModel.dart';
 import '../Widgets/IconCreation.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
@@ -21,6 +22,8 @@ class IndividualPageState extends State<IndividualPage> {
   bool sendButton = false;
   IconData sendIcon = Icons.mic;
   final TextEditingController _controller = TextEditingController();
+  List<MessageModel> messages = [];
+
   void connect() {
     socket = IO.io('http://localhost:5000', <String, dynamic>{
       'transports': ['websocket'],
@@ -31,17 +34,30 @@ class IndividualPageState extends State<IndividualPage> {
       print("Connected");
       socket.on("message", (msg) {
         print(msg);
+        setMessage(msg["message"], "receive");
       });
     });
     socket.emit("signin", widget.currentUser.id);
   }
 
   void sendMessage(String message, int senderId, int receiverId) {
+    setMessage(message, "source");
     socket.emit("message", {
       "message": message,
       "senderId": senderId,
       "receiverId": receiverId,
     });
+  }
+
+  void setMessage(String message, String type) {
+    MessageModel m = MessageModel(type: type, message: message);
+    if (mounted) {
+      setState(() {
+        setState(() {
+          messages.add(m);
+        });
+      });
+    }
   }
 
   @override
@@ -147,22 +163,21 @@ class IndividualPageState extends State<IndividualPage> {
             child: Stack(
               children: [
                 SizedBox(
-                  height: MediaQuery.of(context).size.height - 110,
-                  child: ListView(
-                    shrinkWrap: true,
-                    children: const [
-                      OwnMessageCard(),
-                      ReplyCard(),
-                      OwnMessageCard(),
-                      ReplyCard(),
-                      OwnMessageCard(),
-                      OwnMessageCard(),
-                      ReplyCard(),
-                      OwnMessageCard(),
-                      ReplyCard(),
-                    ],
-                  ),
-                ),
+                    height: MediaQuery.of(context).size.height - 110,
+                    child: ListView.builder(
+                      itemCount: messages.length,
+                      itemBuilder: (context, index) {
+                        if (messages[index].type == "source") {
+                          return OwnMessageCard(
+                            message: messages[index].message,
+                          );
+                        } else {
+                          return ReplyCard(
+                            message: messages[index].message,
+                          );
+                        }
+                      },
+                    )),
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Row(
