@@ -27,7 +27,12 @@ class IndividualPageState extends State<IndividualPage> {
       'upgrade': false
     });
     socket.connect();
-    socket.onConnect((data) => print("Connected"));
+    socket.onConnect((data) {
+      print("Connected");
+      socket.on("message", (msg) {
+        print(msg);
+      });
+    });
     socket.emit("signin", widget.currentUser.id);
   }
 
