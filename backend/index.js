@@ -9,12 +9,18 @@ const io = require("socket.io")(server);
 
 app.use(express.json());
 
+var clients = {};
+
 io.on("connection", (socket)=>{
     console.log("connected");
     console.log(socket.id, "has joined");
-    socket.on("signin", (msg)=>{
-        console.log(msg);
+    socket.on("signin", (id)=>{
+        console.log(id);
+        clients[id] = socket;
     });
+    socket.on("message", (msg)=>{
+        console.log(msg);
+    })
 });
 
 server.listen(port, ()=>{

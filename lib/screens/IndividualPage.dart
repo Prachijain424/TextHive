@@ -20,7 +20,7 @@ class IndividualPageState extends State<IndividualPage> {
   late IO.Socket socket;
   bool sendButton = false;
   IconData sendIcon = Icons.mic;
-
+  final TextEditingController _controller = TextEditingController();
   void connect() {
     socket = IO.io('http://localhost:5000', <String, dynamic>{
       'transports': ['websocket'],
@@ -29,6 +29,14 @@ class IndividualPageState extends State<IndividualPage> {
     socket.connect();
     socket.onConnect((data) => print("Connected"));
     socket.emit("signin", widget.currentUser.id);
+  }
+
+  void sendMessage(String message, int senderId, int receiverId) {
+    socket.emit("message", {
+      "message": message,
+      "senderId": senderId,
+      "receiverId": receiverId,
+    });
   }
 
   @override
@@ -163,6 +171,7 @@ class IndividualPageState extends State<IndividualPage> {
                             borderRadius: BorderRadius.circular(25),
                           ),
                           child: TextFormField(
+                            controller: _controller,
                             textAlignVertical: TextAlignVertical.center,
                             keyboardType: TextInputType.multiline,
                             maxLines: 5,
@@ -217,9 +226,20 @@ class IndividualPageState extends State<IndividualPage> {
                         child: CircleAvatar(
                           radius: 22,
                           backgroundColor: Colors.blue,
-                          child: Icon(
-                            sendIcon,
-                            color: Colors.white,
+                          child: IconButton(
+                            icon: Icon(
+                              sendIcon,
+                              color: Colors.white,
+                            ),
+                            onPressed: () {
+                              if (sendButton == true) {
+                                sendMessage(_controller.text,
+                                    widget.currentUser.id, widget.chatModel.id);
+                                setState(() {
+                                  _controller.clear();
+                                });
+                              }
+                            },
                           ),
                         ),
                       ),
