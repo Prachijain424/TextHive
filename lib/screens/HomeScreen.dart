@@ -94,7 +94,7 @@ class HomeScreenState extends State<HomeScreen>
           users: widget.users,
           currentUser: widget.currentUser,
         ),
-        const Text("3"),
+          StatusPage(),
         const Text("4"),
       ]),
     );
