@@ -6,7 +6,7 @@ class HeadOwnStatus extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       leading: Stack(
-        children: const [
+        children:  [
          CircleAvatar(
            radius: 27,
            backgroundColor: Colors.white,
@@ -28,9 +28,14 @@ class HeadOwnStatus extends StatelessWidget {
         ],
 
       ),
-    title: Text("My Status",style: TextStyle(fontWeight : FontWeight.bold,
+    title: Text("My Status",
+      style: TextStyle(fontWeight : FontWeight.bold,
       color : Colors.black
-    )),
-    ) ;
+    ),
+    ),
+      subtitle: Text("Tap to add status update", style:TextStyle(fontSize:13 ,
+          color : Colors.grey[900]),
+      ) ,
+    );
   }
 }

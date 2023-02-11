@@ -3,6 +3,7 @@ import 'package:untitled1/Models/ChatModel.dart';
 import 'package:untitled1/Pages/CameraPage.dart';
 import 'package:untitled1/screens/CreateGroup.dart';
 import '../Pages/ChatPage.dart';
+import '../Pages/StatusPage.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key, required this.users, required this.currentUser})
