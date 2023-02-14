@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:untitled1/Models/ChatModel.dart';
-import 'package:untitled1/Pages/CameraPage.dart';
+import 'package:untitled1/Pages/CallPage.dart';
 import 'package:untitled1/screens/CreateGroup.dart';
 import '../Pages/ChatPage.dart';
 import '../Pages/StatusPage.dart';
@@ -95,8 +95,8 @@ class HomeScreenState extends State<HomeScreen>
           users: widget.users,
           currentUser: widget.currentUser,
         ),
-          StatusPage(),
-        const Text("4"),
+        StatusPage(),
+        const CallPage(),
       ]),
     );
   }
