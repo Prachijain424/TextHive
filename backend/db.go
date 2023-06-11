@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/go-pg/pg/orm"
 	"log"
 	"os"
 
@@ -34,6 +35,21 @@ func connect() *pg.DB {
 }
 
 func createSchema(db *pg.DB) error {
+
+	models := []interface{}{
+		(*User)(nil),
+		(*Contact)(nil),
+		(*Message)(nil),
+		(*Call)(nil),
+	}
+	for _, model := range models {
+		if error := db.Model(model).CreateTable(&orm.CreateTableOptions{
+			Temp:        false,
+			IfNotExists: true,
+		}); error != nil {
+			return error
+		}
+	}
 
 	return nil
 }
