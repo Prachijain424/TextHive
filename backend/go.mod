@@ -2,7 +2,10 @@ module tidy
 
 go 1.20
 
-require github.com/go-pg/pg v8.0.7+incompatible
+require (
+	github.com/go-pg/pg v8.0.7+incompatible
+	golang.org/x/net v0.10.0
+)
 
 require (
 	github.com/jinzhu/inflection v1.0.0 // indirect
