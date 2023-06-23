@@ -4,7 +4,6 @@ import 'package:untitled1/CustomUI/ReplyCard.dart';
 import 'package:untitled1/Models/ChatModel.dart';
 import 'package:untitled1/Models/MessageModel.dart';
 import '../Widgets/IconCreation.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class IndividualPage extends StatefulWidget {
   const IndividualPage(
@@ -18,35 +17,17 @@ class IndividualPage extends StatefulWidget {
 }
 
 class IndividualPageState extends State<IndividualPage> {
-  late IO.Socket socket;
   bool sendButton = false;
   IconData sendIcon = Icons.mic;
   final TextEditingController _controller = TextEditingController();
   List<MessageModel> messages = [];
 
   void connect() {
-    socket = IO.io('http://localhost:5000', <String, dynamic>{
-      'transports': ['websocket'],
-      'upgrade': false
-    });
-    socket.connect();
-    socket.onConnect((data) {
-      print("Connected");
-      socket.on("message", (msg) {
-        print(msg);
-        setMessage(msg["message"], "receive");
-      });
-    });
-    socket.emit("signin", widget.currentUser.id);
+
   }
 
   void sendMessage(String message, int senderId, int receiverId) {
     setMessage(message, "source");
-    socket.emit("message", {
-      "message": message,
-      "senderId": senderId,
-      "receiverId": receiverId,
-    });
   }
 
   void setMessage(String message, String type) {
@@ -86,9 +67,9 @@ class IndividualPageState extends State<IndividualPage> {
               onTap: () {
                 Navigator.pop(context);
               },
-              child: Row(
+              child: const Row(
                 mainAxisAlignment: MainAxisAlignment.end,
-                children: const [
+                children: [
                   Icon(
                     Icons.arrow_back_ios_new,
                     size: 24,

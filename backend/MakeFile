@@ -10,5 +10,10 @@ postgres:
 dropdb:
 	docker exec -it dropdb text-hive-db
 
-.PHONY : postgresinit createdb postgres dropdb
+migrateup:
+	migrate -path db/migrations -database "postgresql://root:password@localhost:5433/text-hive-db?sslmode=disable" -verbose up
+migratedown:
+	migrate -path db/migrations -database "postgresql://root:password@localhost:5433/text-hive-db?sslmode=disable" -verbose down
+
+.PHONY : postgresinit createdb postgres dropdb migrateup migratedown
 
