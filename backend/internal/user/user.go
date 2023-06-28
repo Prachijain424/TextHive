@@ -4,7 +4,7 @@ import "golang.org/x/net/context"
 
 type User struct {
 	ID       int64  `json:"id" db:"id"`
-	UserName string `json:"userName" db:"username"`
+	Username string `json:"username" db:"username"`
 	Email    string `json:"email" db:"email"`
 	Password string `json:"password" db:"password"`
 }
@@ -14,17 +14,18 @@ type Repository interface {
 }
 
 type CreateUserRequest struct {
-	ID       int64  `json:"id" db:"id"`
-	UserName string `json:"userName" db:"username"`
-	Email    string `json:"email" db:"email"`
+	ID       int64  `json:"id"`
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
 type CreateUserResponse struct {
-	ID       int64  `json:"id" db:"id"`
-	UserName string `json:"userName" db:"username"`
-	Email    string `json:"email" db:"email"`
+	ID       string `json:"id"`
+	Username string `json:"username"`
+	Email    string `json:"email"`
 }
 
 type Service interface {
-	CreateUser(ctx context.Context, request *CreateUserRequest) (*CreateUserResponse, error)
+	CreateUser(ctx context.Context, request CreateUserRequest) (*CreateUserResponse, error)
 }
