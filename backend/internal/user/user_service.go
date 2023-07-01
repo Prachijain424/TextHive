@@ -14,7 +14,7 @@ type service struct {
 
 func NewService(repository *Repository) Service {
 	return &service{
-		*repository, time.Duration(2) * time.Hour,
+		*repository, time.Duration(2) * time.Minute,
 	}
 }
 
@@ -46,4 +46,10 @@ func (s *service) CreateUser(ctx context.Context, req CreateUserRequest) (*Creat
 	}
 
 	return response, nil
+}
+
+func (s *service) Login(ctx context.Context, req LoginRequest) (*LoginResponse, error) {
+	ctx, cancel := context.WithTimeout(ctx, s.timeout)
+	defer cancel()
+	return nil, nil
 }
