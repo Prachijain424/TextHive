@@ -29,3 +29,24 @@ func (h *Handler) CreateUser(c *gin.Context) {
 
 	c.JSON(http.StatusOK, res)
 }
+
+func (h *Handler) Login(c *gin.Context) {
+	var userCredentials LoginRequest
+	if err := c.ShouldBindJSON(&userCredentials); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	user, err := h.Service.Login(c.Request.Context(), &userCredentials)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.SetCookie("jwt", user.AccessToken, 3600, "/", "localhost", false, true)
+
+	res := &LoginResponse{ID: user.ID, Username: user.Username}
+
+	c.JSON(http.StatusOK, res)
+}

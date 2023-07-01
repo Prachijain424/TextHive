@@ -1,6 +1,9 @@
 package user
 
-import "golang.org/x/net/context"
+import (
+	"github.com/golang-jwt/jwt/v4"
+	"golang.org/x/net/context"
+)
 
 type User struct {
 	ID       int64  `json:"id" db:"id"`
@@ -34,11 +37,17 @@ type LoginRequest struct {
 
 type LoginResponse struct {
 	AccessToken string
-	ID          string `json:"id"`
+	ID          int64  `json:"id"`
 	Username    string `json:"username"`
+}
+
+type JWTClaims struct {
+	ID       string `json:"id"`
+	Username string `json:"username"`
+	jwt.RegisteredClaims
 }
 
 type Service interface {
 	CreateUser(ctx context.Context, request CreateUserRequest) (*CreateUserResponse, error)
-	Login(ctx context.Context, req LoginRequest) (*LoginResponse, error)
+	Login(ctx context.Context, req *LoginRequest) (*LoginResponse, error)
 }
