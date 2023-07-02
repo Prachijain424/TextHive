@@ -4,6 +4,7 @@ import (
 	"log"
 	"tidy/db"
 	"tidy/internal/user"
+	"tidy/internal/websocket"
 	"tidy/router"
 )
 
@@ -15,8 +16,12 @@ func main() {
 
 	repo := user.NewRepository(dbConn.GetDB())
 	service := user.NewService(&repo)
-	handler := user.NewHandler(&service)
+	userHandler := user.NewHandler(&service)
 
-	router.InitRouter(handler)
+	hub := websocket.NewHub()
+	WsHandler := websocket.NewHandler(hub)
+	go hub.Run()
+
+	router.InitRouter(userHandler, WsHandler)
 	router.Start("localhost:3000")
 }
