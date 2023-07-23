@@ -1,9 +1,9 @@
 package router
 
 import (
-	"github.com/gin-gonic/gin"
 	"tidy/internal/user"
 	"tidy/internal/websocket"
+	"github.com/gin-gonic/gin"
 )
 
 var router *gin.Engine
@@ -16,7 +16,7 @@ func InitRouter(userHandler *user.Handler, WsHandler *websocket.Handler) {
 	router.POST("/ws/createRoom", WsHandler.CreateRoom)
 	router.GET("/ws/joinRoom/:roomId", WsHandler.JoinRoom)
 	router.GET("/ws/getRooms", WsHandler.GetRooms)
-	router.GET("/ws/getClients/:roomId", WsHandler.GetClients)
+	router.POST("/ws/getClients/:roomId", WsHandler.GetClients)
 }
 
 func Start(address string) {
