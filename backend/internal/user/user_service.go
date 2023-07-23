@@ -2,12 +2,13 @@ package user
 
 import (
 	"errors"
-	"github.com/golang-jwt/jwt/v4"
-	"golang.org/x/net/context"
 	"os"
 	"strconv"
 	"tidy/util"
 	"time"
+
+	"github.com/golang-jwt/jwt/v4"
+	"golang.org/x/net/context"
 )
 
 type service struct {
@@ -31,7 +32,7 @@ func (s *service) CreateUser(ctx context.Context, req CreateUserRequest) (*Creat
 	}
 
 	user := &User{
-		Username: req.Username,
+		Name:     req.Name,
 		Email:    req.Email,
 		Password: hashedPassword,
 	}
@@ -43,9 +44,9 @@ func (s *service) CreateUser(ctx context.Context, req CreateUserRequest) (*Creat
 	}
 
 	response := &CreateUserResponse{
-		Username: r.Username,
-		Email:    r.Email,
-		ID:       strconv.Itoa(int(r.ID)),
+		Name:  r.Name,
+		Email: r.Email,
+		ID:    strconv.Itoa(int(r.UserID)),
 	}
 
 	return response, nil
@@ -64,10 +65,10 @@ func (s *service) Login(ctx context.Context, req *LoginRequest) (*LoginResponse,
 	}
 
 	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, JWTClaims{
-		ID:       strconv.Itoa(int(user.ID)),
-		Username: user.Username,
+		ID:   strconv.Itoa(int(user.UserID)),
+		Name: user.Name,
 		RegisteredClaims: jwt.RegisteredClaims{
-			Issuer:    strconv.Itoa(int(user.ID)),
+			Issuer:    strconv.Itoa(int(user.UserID)),
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
 		},
 	})
@@ -79,8 +80,8 @@ func (s *service) Login(ctx context.Context, req *LoginRequest) (*LoginResponse,
 
 	res := &LoginResponse{
 		AccessToken: signedString,
-		ID:          user.ID,
-		Username:    user.Username,
+		ID:          user.UserID,
+		Name:        user.Name,
 	}
 	return res, nil
 }

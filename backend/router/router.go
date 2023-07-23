@@ -1,24 +1,29 @@
 package router
 
 import (
+	"net/http"
 	"tidy/internal/user"
 	"tidy/internal/websocket"
-	"github.com/gin-gonic/gin"
+
+	"github.com/gorilla/mux"
 )
 
-var router *gin.Engine
+func InitRouter(userHandler *user.Handler, WsHandler *websocket.Handler) *mux.Router {
 
-func InitRouter(userHandler *user.Handler, WsHandler *websocket.Handler) {
-	router = gin.Default()
-	router.POST("/signup", userHandler.CreateUser)
-	router.POST("/signin", userHandler.Login)
-	router.GET("/signout", userHandler.Logout)
-	router.POST("/ws/createRoom", WsHandler.CreateRoom)
-	router.GET("/ws/joinRoom/:roomId", WsHandler.JoinRoom)
-	router.GET("/ws/getRooms", WsHandler.GetRooms)
-	router.POST("/ws/getClients/:roomId", WsHandler.GetClients)
+	router := mux.NewRouter()
+
+	router.HandleFunc("/signup", userHandler.CreateUser).Methods("POST")
+	router.HandleFunc("/signin", userHandler.Login).Methods("POST")
+	router.HandleFunc("/signout", userHandler.Logout).Methods("GET")
+
+	router.HandleFunc("/ws/createRoom", WsHandler.CreateRoom).Methods("POST")
+	router.HandleFunc("/ws/joinRoom/:roomId", WsHandler.JoinRoom).Methods("GET")
+	router.HandleFunc("/ws/getRooms", WsHandler.GetRooms).Methods("GET")
+	router.HandleFunc("/ws/getClients/:roomId", WsHandler.GetClients).Methods("GET")
+
+	return router
 }
 
-func Start(address string) {
-	router.Run(address)
+func Start(address string, router *mux.Router) {
+	http.ListenAndServe(address, router)
 }

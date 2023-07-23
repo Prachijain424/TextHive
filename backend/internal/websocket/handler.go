@@ -1,9 +1,10 @@
 package websocket
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/gorilla/websocket"
+	"encoding/json"
 	"net/http"
+
+	"github.com/gorilla/websocket"
 )
 
 type Handler struct {
@@ -12,7 +13,7 @@ type Handler struct {
 
 type CreateRoomRequest struct {
 	ID   string `json:"id"`
-	name string `json:"name"`
+	Name string `json:"name"`
 }
 
 func NewHandler(h *Hub) *Handler {
@@ -21,20 +22,41 @@ func NewHandler(h *Hub) *Handler {
 	}
 }
 
-func (h *Handler) CreateRoom(c *gin.Context) {
+func parseRequest(r *http.Request, requestBody interface{}) error {
+
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&requestBody)
+
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func JSONError(w http.ResponseWriter, err interface{}, code int) {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.Header().Set("X-Content-Type-Options", "nosniff")
+	w.WriteHeader(code)
+	json.NewEncoder(w).Encode(err)
+}
+
+func (h *Handler) CreateRoom(w http.ResponseWriter, r *http.Request) {
 	var request CreateRoomRequest
-	if err := c.ShouldBindJSON(&request); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	err := parseRequest(r, &request)
+	if err != nil {
+		JSONError(w, err, http.StatusBadRequest)
 		return
 	}
 
 	h.Hub.Rooms[request.ID] = &Room{
 		ID:      request.ID,
-		Name:    request.name,
+		Name:    request.Name,
 		Clients: make(map[string]*Client, 0),
 	}
 
-	c.JSON(http.StatusOK, request)
+	payload, _ := json.Marshal(request)
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.Write(payload)
 }
 
 var upgrader = websocket.Upgrader{
@@ -50,25 +72,25 @@ var upgrader = websocket.Upgrader{
 	EnableCompression: false,
 }
 
-func (h *Handler) JoinRoom(c *gin.Context) {
-	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
+func (h *Handler) JoinRoom(w http.ResponseWriter, r *http.Request) {
+	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
 		return
 	}
 
 	client := &Client{
-		ID:       c.Param("ClientId"),
-		Conn:     *conn,
+		ID:       r.FormValue("ClientId"),
+		Conn:     conn,
 		Message:  make(chan *Message, 10),
-		RoomID:   c.Param("roomId"),
-		Username: c.Param("username"),
+		RoomID:   r.FormValue("roomId"),
+		Username: r.FormValue("username"),
 	}
 
 	msg := &Message{
 		Content:  "A new user has joined the room",
-		RoomID:   c.Param("roomId"),
-		Username: c.Param("username"),
+		RoomID:   r.FormValue("roomId"),
+		Username: r.FormValue("username"),
 	}
 	h.Hub.Register <- client
 	h.Hub.Broadcast <- msg
@@ -86,7 +108,7 @@ type ClientResponse struct {
 	Username string `json:"username"`
 }
 
-func (h *Handler) GetRooms(c *gin.Context) {
+func (h *Handler) GetRooms(w http.ResponseWriter, r *http.Request) {
 	rooms := make([]RoomResponse, 0)
 
 	for _, room := range h.Hub.Rooms {
@@ -96,15 +118,19 @@ func (h *Handler) GetRooms(c *gin.Context) {
 		})
 	}
 
-	c.JSON(http.StatusOK, rooms)
+	payload, _ := json.Marshal(rooms)
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.Write(payload)
 }
 
-func (h *Handler) GetClients(c *gin.Context) {
+func (h *Handler) GetClients(w http.ResponseWriter, r *http.Request) {
 	clients := make([]ClientResponse, 0)
-	roomId := c.Param("roomId")
+	roomId := r.FormValue("roomId")
 
 	if _, ok := h.Hub.Rooms[roomId]; !ok {
-		c.JSON(http.StatusOK, clients)
+		payload, _ := json.Marshal(clients)
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.Write(payload)
 	}
 
 	for _, client := range h.Hub.Rooms[roomId].Clients {
@@ -114,5 +140,7 @@ func (h *Handler) GetClients(c *gin.Context) {
 		})
 	}
 
-	c.JSON(http.StatusOK, clients)
+	payload, _ := json.Marshal(clients)
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.Write(payload)
 }
