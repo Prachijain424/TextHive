@@ -9,12 +9,12 @@ import (
 )
 
 func main() {
-	dbConn, err := db.NewDatabase()
+	db, err := db.NewDatabase()
 	if err != nil {
 		log.Fatalf("could not initialise db connection %s", err)
 	}
 
-	repo := user.NewRepository(dbConn.GetDB())
+	repo := user.NewRepository(db)
 	service := user.NewService(&repo)
 	userHandler := user.NewHandler(&service)
 

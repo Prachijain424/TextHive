@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
-	"tidy/util"
+	"time"
 )
 
 type Handler struct {
@@ -31,6 +31,32 @@ func JSONError(w http.ResponseWriter, err interface{}, code int) {
 	w.Header().Set("X-Content-Type-Options", "nosniff")
 	w.WriteHeader(code)
 	json.NewEncoder(w).Encode(err)
+}
+
+func setCookieHandler(w http.ResponseWriter, r *http.Request) {
+	cookie := &http.Cookie{
+		Name:     "jwt",
+		Value:    "your_access_token_here",
+		Expires:  time.Now().Add(1 * time.Hour),
+		Path:     "/",
+		Domain:   "localhost",
+		HttpOnly: true,
+		Secure:   false, // Set to true if using HTTPS
+	}
+	http.SetCookie(w, cookie)
+}
+
+func deleteCookieHandler(w http.ResponseWriter, r *http.Request) {
+	cookie := &http.Cookie{
+		Name:     "jwt",
+		Value:    "",
+		Expires:  time.Now().Add(-1 * time.Hour), // Set to a past time
+		Path:     "/",
+		Domain:   "localhost",
+		HttpOnly: true,
+		Secure:   false, // Set to true if using HTTPS
+	}
+	http.SetCookie(w, cookie)
 }
 
 func (h *Handler) CreateUser(w http.ResponseWriter, r *http.Request) {
@@ -70,10 +96,9 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 		JSONError(w, err, http.StatusInternalServerError)
 		return
 	}
-	util.
-	util.setCookieHandler(w, r)
+	setCookieHandler(w, r)
 
-	res := &LoginResponse{ID: user.ID, Username: user.Username}
+	res := &LoginResponse{ID: user.ID, Name: user.Name}
 
 	payload, _ := json.Marshal(res)
 	w.Header().Set("Content-Type", "application/json")
@@ -81,7 +106,7 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) Logout(w http.ResponseWriter, r *http.Request) {
-	util.deleteCookieHandler(w, r)
+	deleteCookieHandler(w, r)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte("Successfully logged out!"))
 }

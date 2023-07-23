@@ -7,7 +7,7 @@ import (
 
 type Client struct {
 	ID       string `json:"id"`
-	Conn     websocket.Conn
+	Conn     *websocket.Conn
 	Message  chan *Message
 	RoomID   string `json:"roomID"`
 	Username string `json:"username"`

@@ -2,21 +2,16 @@ package user
 
 import (
 	"context"
-	"database/sql"
+	"errors"
+
+	"gorm.io/gorm"
 )
 
-type DBTX interface {
-	//ExecContent(ctx context.Context, query string, args ...interface{})
-	//PrepareContext(context.Context, string)
-	QueryContext(context.Context, string, ...interface{}) (*sql.Rows, error)
-	QueryRowContext(context.Context, string, ...interface{}) *sql.Row
-}
-
 type repository struct {
-	db DBTX
+	db *gorm.DB
 }
 
-func NewRepository(db DBTX) Repository {
+func NewRepository(db *gorm.DB) Repository {
 	return &repository{
 		db: db,
 	}
@@ -24,19 +19,18 @@ func NewRepository(db DBTX) Repository {
 
 func (r *repository) CreateUser(ctx context.Context, user *User) (*User, error) {
 	var lastInsertedId int
-	query := "INSERT INTO users(username, password, email) VALUES ($1, $2, $3) returning id"
-	if err := r.db.QueryRowContext(ctx, query, user.Username, user.Password, user.Email).Scan(&lastInsertedId); err != nil {
-		return nil, err
+	db := r.db.Table("user").Create(user)
+	if db.Error != nil {
+		return nil, db.Error
 	}
-	user.ID = int64(lastInsertedId)
+	if db.RowsAffected == 0 {
+		return nil, errors.New("db didn't get updated")
+	}
+	user.UserID = int64(lastInsertedId)
 	return user, nil
 }
 
 func (r *repository) GetUserByEmail(ctx context.Context, email string) (*User, error) {
 	user := User{}
-	query := "SELECT id, email, username, password FROM users WHERE email = $1"
-	if err := r.db.QueryRowContext(ctx, query, email).Scan(&user.ID, &user.Email, &user.Username, &user.Password); err != nil {
-		return nil, err
-	}
 	return &user, nil
 }
