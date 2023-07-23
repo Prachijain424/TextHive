@@ -1,7 +1,6 @@
 package websocket
 
 import (
-	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"net/http"
 )
@@ -12,7 +11,7 @@ type Handler struct {
 
 type CreateRoomRequest struct {
 	ID   string `json:"id"`
-	name string `json:"name"`
+	Name string `json:"name"`
 }
 
 func NewHandler(h *Hub) *Handler {
@@ -21,7 +20,7 @@ func NewHandler(h *Hub) *Handler {
 	}
 }
 
-func (h *Handler) CreateRoom(c *gin.Context) {
+func (h *Handler) CreateRoom(w http.ResponseWriter, r *http.Request) {
 	var request CreateRoomRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -30,7 +29,7 @@ func (h *Handler) CreateRoom(c *gin.Context) {
 
 	h.Hub.Rooms[request.ID] = &Room{
 		ID:      request.ID,
-		Name:    request.name,
+		Name:    request.Name,
 		Clients: make(map[string]*Client, 0),
 	}
 
@@ -50,7 +49,7 @@ var upgrader = websocket.Upgrader{
 	EnableCompression: false,
 }
 
-func (h *Handler) JoinRoom(c *gin.Context) {
+func (h *Handler) JoinRoom(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -86,7 +85,7 @@ type ClientResponse struct {
 	Username string `json:"username"`
 }
 
-func (h *Handler) GetRooms(c *gin.Context) {
+func (h *Handler) GetRooms(w http.ResponseWriter, r *http.Request) {
 	rooms := make([]RoomResponse, 0)
 
 	for _, room := range h.Hub.Rooms {
@@ -99,7 +98,7 @@ func (h *Handler) GetRooms(c *gin.Context) {
 	c.JSON(http.StatusOK, rooms)
 }
 
-func (h *Handler) GetClients(c *gin.Context) {
+func (h *Handler) GetClients(w http.ResponseWriter, r *http.Request) {
 	clients := make([]ClientResponse, 0)
 	roomId := c.Param("roomId")
 

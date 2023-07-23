@@ -37,6 +37,7 @@ require (
 )
 
 require (
+	github.com/gorilla/mux v1.8.0
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/lib/pq v1.10.9
 	github.com/onsi/ginkgo v1.16.5 // indirect

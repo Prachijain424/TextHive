@@ -22,6 +22,6 @@ func main() {
 	WsHandler := websocket.NewHandler(hub)
 	go hub.Run()
 
-	router.InitRouter(userHandler, WsHandler)
-	router.Start("localhost:3000")
+	r := router.InitRouter(userHandler, WsHandler)
+	router.Start("localhost:3000", r)
 }
